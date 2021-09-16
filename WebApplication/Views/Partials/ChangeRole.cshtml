@@ -1,0 +1,18 @@
+﻿@model WebApplication.Models.UserModel
+<p id="Ch_Role">
+    @Model.Role.Name
+    @Html.DropDownListFor(model => model.RoleId, new SelectList(ViewBag.Roles, "Id", "Name"), new { @class = "form-control" })
+    <button type="button" id="Save_R">Зберегти</button>
+    <button type="button" id="Cancel_R">Скасувати</button>
+</p>
+<script>
+    document.getElementById("Cancel_R").addEventListener("click", event => {
+        $.get('@Url.Action("ToChangeRole", "Users", new { userId = Model.Id })', function (data) {
+            $("#Ch_Role").replaceWith(data);
+        });
+    })
+    document.getElementById("Save_R").addEventListener("click", event => {
+        debugger;
+        $("#changeRole").submit();
+    })
+</script>

@@ -1,0 +1,74 @@
+﻿@model WebApplication.Models.UserModel
+@{
+    Layout = "_Admin";
+}
+
+<div class="jumbotron">
+    <form id="changeRole" action="/Account/Save" method="post">
+        <input type="hidden" value="@Model.Id" name="Id" />
+        <p>@Model.Email (@Model.Role.Name) </p>
+        <p>@{await Html.RenderPartialAsync("~/Views/Partials/ToChangeRole.cshtml", Model);}</p>
+        <p>@{await Html.RenderPartialAsync("~/Views/Partials/ToChangeEmail.cshtml", Model);}</p>
+    </form>
+    <form id="changePass" action="/Users/ChangePassword" method="post">
+        <input type="hidden" value="@Model.Id" name="Id" />
+        <p>@{await Html.RenderPartialAsync("~/Views/Partials/ToChangePassword.cshtml", Model);}</p>
+    </form>
+
+</div>
+
+@if (Model.Weathers.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <p>Місто</p>
+                </th>
+                <th>
+                    <p>Температура</p>
+                </th>
+                <th>
+                    <p>Макс. температура</p>
+                </th>
+                <th>
+                    <p>Мін. температура</p>
+                </th>
+                <th>
+                    <p>Дата</p>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Weathers)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Temperature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaxTemperature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MinTemperature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h2>Користувач ще не переглядав погоду</h2>
+}
+
+
+
+

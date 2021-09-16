@@ -1,0 +1,11 @@
+﻿@model WebApplication.Models.UserModel
+@{Layout = null;}
+<button type="button" id="Ch_Role" class="btn btn-primary">Змінити роль</button>
+<script>
+    var ch_role = document.getElementById("Ch_Role");
+    ch_role.addEventListener("click", event => {
+        $.get('@Url.Action("ChangeRole", "Users", new { userId = Model.Id })', function (data) {
+            $("#Ch_Role").replaceWith(data);
+        });
+    })
+</script>

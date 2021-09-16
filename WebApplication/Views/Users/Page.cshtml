@@ -1,0 +1,99 @@
+﻿@{if (User.IsInRole(WebApplication.Data.Constants.Admin))
+        Layout = "_Admin";
+    else
+        Layout = "_User";}
+@model IEnumerable<WebApplication.Models.WeatherModel>
+
+
+    <div class="jumbotron">
+        <p>@ViewBag.User.Email</p>
+        <p>
+                @{UserModel a = ViewBag.User; }
+            <form id="changeRole" action="/Account/Save" method="post">
+                <input type="hidden" value="@ViewBag.User.Id" name="Id" />
+                @{await Html.RenderPartialAsync("~/Views/Partials/ToChangeEmail.cshtml", a);}
+            </form>
+            <form id="changePass" action="/Users/ChangePassword" method="post">
+                <input type="hidden" value="@ViewBag.User.Id" name="Id" />
+                @{await Html.RenderPartialAsync("~/Views/Partials/ToChangePassword.cshtml", a); }
+
+            </form>
+        </p>
+    <div>
+        @Html.ActionLink("Видалити", "Delete", "Account", new { userId = a.Id }, new { @onclick = "return confirm(\"бажаєте видалити свою сторінку?\")" })
+    </div>
+    @*<p>@{await Html.RenderPartialAsync("~/Views/Partials/ToChangePassword.cshtml", @User.Claims.First().Value);}</p>*@
+</div>
+
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <p>Місто</p>
+                </th>
+                <th>
+                    <p>Температура</p>
+                </th>
+                <th>
+                    <p>Макс. температура</p>
+                </th>
+                <th>
+                    <p>Мін. температура</p>
+                </th>
+                <th>
+                    <p>Дата</p>
+                </th>
+                @if (User.IsInRole(WebApplication.Data.Constants.Admin))
+                {
+                    <th>
+                        <p>Користувач</p>
+                    </th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Temperature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaxTemperature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MinTemperature)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    @if (User.IsInRole(WebApplication.Data.Constants.Admin))
+                    {
+                        <th>
+                            <p>@Html.DisplayFor(modelItem => item.User.Email)</p>
+                        </th>
+                    }
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if (!Model.Any() && User.IsInRole(WebApplication.Data.Constants.User))
+{
+    <h2>Ви ще не переглядали погоду</h2>
+}
+
+
+

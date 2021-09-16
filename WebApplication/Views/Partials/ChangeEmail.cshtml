@@ -1,0 +1,17 @@
+﻿@model WebApplication.Models.UserModel
+<p id="Ch_Email">
+    @Html.EditorFor(model => model.Email)
+    <button type="button" id="Save_E">Зберегти</button>
+    <button type="button" id="Cancel_E">Скасувати</button>
+</p>
+<script>
+    document.getElementById("Cancel_E").addEventListener("click", event => {
+        $.get('@Url.Action("ToChangeEmail", "Users", new { userId = Model.Id })', function (data) {
+            $("#Ch_Email").replaceWith(data);
+        });
+    })
+    document.getElementById("Save_E").addEventListener("click", event => {
+        //debugger;
+        $("#changeRole").submit();
+    })
+</script>

@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    if (User.IsInRole(WebApplication.Data.Constants.Admin))
+        Layout = "_Admin";
+    else
+        Layout = "_User";
+}
+@if (User.IsInRole(WebApplication.Data.Constants.User))
+{
+    <div class="jumbotron">
+        <p>Місто:</p>
+        <input id="City" type="text" />
+        <button id="Submit">Get Weather Forecast</button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table>
+                <tr>
+                    <td>max t:</td>
+                    <td><p id="max_temp"></p></td>
+                </tr>
+                <tr>
+                    <td>t:</td>
+                    <td><p id="temp"></p></td>
+                </tr>
+                <tr>
+                    <td>min t:</td>
+                    <td><p id="min_temp"></p></td>
+                </tr>
+                <tr>
+                    <td>вологість:</td>
+                    <td><p id="humid"></p></td>
+                </tr>
+                <tr>
+                    <td>тиск:</td>
+                    <td><p id="pres"></p></td>
+                </tr>
+                <tr>
+                    <td>шв. вітру:</td>
+                    <td><p id="sp_wind"></p></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var but = document.getElementById("Submit");
+        var i = 0;
+        but.addEventListener("click", event => {
+            var city = document.getElementById("City").value;
+
+            console.log(city);
+            if (city.length > 0) {
+                $.ajax({
+                    url: "https://localhost:5001/Home/Weather?City=" + city,
+                    type: "GET",
+                    success: function (rsltval) {
+                        var data = rsltval;
+                        console.log(data);
+                        $("#humid").text(data.humidity);
+                        $("#temp").text(data.temp);
+                        $("#max_temp").text(data.tempMax);
+                        $("#min_temp").text(data.tempMin);
+                        $("#sp_wind").text(data.windSpeed);
+                        $("#pres").text(data.pressure);
+
+                    },
+                    error: function () {
+                        alert("something happened");
+                    }
+                });
+
+            }
+            else {
+                alert("not found");
+            }
+        });
+    </script>
+}
+@if (User.IsInRole(WebApplication.Data.Constants.Admin))
+{
+    @model IEnumerable<UserModel>
+    <div class="jumbotron">
+        @Html.ActionLink("Створити","Create", "Users", new { }, new {@class="float-right"})
+        <p >Пошук за email:</p>
+        <input id="Email" type="text" />
+        <button id="Submit">Пошук</button>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="col-12">
+                <thead>
+                    <tr>
+                        <th>
+                            <p>Email</p>
+                        </th>
+                        <th>
+                            <p>Історія</p>
+                        </th>
+                        <th colspan="2">
+                            <p>Редагування</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                <a>@item.Weathers.Count переглядів</a>
+                            </td>
+                            <td>
+                                @Html.ActionLink("Редагувати","History", "Users", new { userId = item.Id })
+                            </td>
+                            <td>
+                                @Html.ActionLink("Видалити", "Delete", "Users", new { userId = item.Id }, new { @onclick = "return confirm(\"бажаєте видалити користувача?\")"})
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

@@ -1,0 +1,88 @@
+﻿@model IEnumerable<WebApplication.Models.WeatherModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@{if (User.IsInRole(WebApplication.Data.Constants.Admin))
+        Layout = "_Admin";
+    else
+        Layout = "_User";}
+
+<p>
+    <input id="search" type="text" />
+    <button id="submit">Пошук</button>
+</p>
+@if (Model.Any())
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>Місто</p>
+            </th>
+            <th>
+                <p>Температура</p>
+            </th>
+            <th>
+                <p>Макс. температура</p>
+            </th>
+            <th>
+                <p>Мін. температура</p>
+            </th>
+            <th>
+                <p>Дата</p>
+            </th>
+            @if (User.IsInRole(WebApplication.Data.Constants.Admin))
+            {
+                <th>
+                    <p>Користувач</p>
+                </th>
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Temperature)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaxTemperature)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinTemperature)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                @if (User.IsInRole(WebApplication.Data.Constants.Admin))
+                {
+                    <th>
+                        <p>@Html.DisplayFor(modelItem => item.User.Email)</p>
+                    </th>
+                }
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+else { 
+    <h2>Історії немає</h2>
+}
+<script>
+    var but = document.getElementById("submit");
+    but.addEventListener("click", event => {
+        var searchStr = document.getElementById("search").value;
+        console.log(searchStr);
+    })
+</script>
